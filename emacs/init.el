@@ -97,6 +97,7 @@ vi style of % jumping to matching brace."
 
 (defvar myPackages
   '(better-defaults
+    ess
     elpy
     material-theme))
 
