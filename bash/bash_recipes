@@ -1,0 +1,149 @@
+## BAM to fasta, remove dups
+function bam2fasta {
+  if [ $1 -q "" ]; then
+    echo "Converts a BAM file to a FASTA file (stdout)"
+    echo "Usage: bam2fasta <bam>"
+  else
+    ##samtools view $1 | awk '{OFS="\t"; if (!seen[$1]++) { print ">"$1"\n"$10}}' - ## with remove dups
+    samtools view $1 | awk '{OFS="\t"; print ">"$1"\n"$10}' -
+  fi
+}
+
+## depth
+function estdepth() {
+  if [ $1 -q "" ]; then
+    echo "Estimate the average sequencing depth (WGS only)"
+    echo "Usage: estdepth <bam>"    
+  else
+    samtools view -h $1 "1:1,000,000-10,000,000" | samtools depth - |  awk '{sum+=$3} END { print "Average = ",sum/NR}'
+  fi
+}
+
+## pad a bed and merge
+function bedpad() {
+  if [ $1 -q "" ]; then
+    echo "Pad a BED file and merge the intervals. BEDGENOME env param needs to be set (see Bedtools docs)"
+    echo "Usage: bedpad <bed> <pad_length>"
+  else 
+    bedtools slop -g $BEDGENOME -b $2 -i $1 | sort -V -k1,1 -k2,2n | bedtools merge -i stdin
+  fi
+}
+
+## extract all alignments.txt contigs from VCF
+function getalignmentcontigs() {
+  if [ $1 -q "" ]; then
+    echo "Extract all alignment plots for contigs in a svaba VCF"
+    echo "Usage: getalignmentcontigs <vcf> <alignments.txt.gz"
+  else
+    tmpfile=$(mktemp /tmp/contigs.XXXXXX);
+    perl -n -e'/SCTG=(.*?);/ && print "$1\n"' $1 > $tmpfile;
+    time gunzip -c $2 | grep -f $tmpfile;
+    rm $tmpfile;
+  fi
+}
+
+function sai() {
+  if  [ $1 -eq "" ]; then
+    echo "Sort and index a BAM file (uses up to 12G of memory)"
+    echo "Usage: sai <bam>"
+  elif [[ -f $1 ]]; then
+     samtools sort -m 12G $1 -o ${1}.sort.bam
+     mv ${1}.sort.bam ${1}
+     samtools index ${1}
+  else
+    echo "$1 does not exist"
+  fi
+}
+
+## subset a BAM file by grepping for a certain read
+function subbam() {
+  if [ $1 -eq "" ]; then
+    echo "Grep a BAM for a string, and preserve the header (can pipe to \"samtools view - -hb\" to get back a BAM"
+    echo "Usage: subbam <bam> <search_term>"
+  elif [[ -f $1 ]]; then
+      exprs="^@\|$2"
+      samtools view -h $1 | grep '$exprs'
+  else
+      echo "$1 does not exist"
+  fi
+}
+
+## Calculate the N50 statistic 
+function n50() {
+  if [ $1 -eq "" ]; then
+    echo "Calculate the N50 from a BAM file"
+    echo "Usage: n50 <bam>"
+  else
+    samtools view $1 | sort -u -k1,1 | cut -f10 | awk '{print length($0)}' | sumr
+  fi
+}
+
+## print the svaba contigs from a vcf
+function getsvabacontigs() {
+  if [ $1 -eq "" ]; then
+    echo "Print the svaba contigs from a VCF"
+    echo "Usage: getsvabacontigs <vcf>"
+  else 
+    perl -n -e'/.*?SCTG=(.*?);.*/ && print "$1\n"' $1
+  fi
+}
+
+## sort a BED file
+function sortbed() {
+  if [ $1 -eq "" ]; then
+    echo "Sort a BED file"
+    echo "Usage sortbed <bed>"
+  else
+   sort -V -k1,1 -k2,2n $1
+  fi
+}
+
+## convert BEDPE to BED
+function pe2bed() {
+  if [ $1 -eq "" ]; then
+    echo "Convert a BEDPE to a BED (two lines in output for each line in input"
+    echo "Usage: pe2bed <bed>"
+  else
+    awk 'BEGIN {FS="\t"} $1==$4 {p1 = $2; p2 = $5; if (p1 < p2) {print $1 "\t" p1 "\t" p2} else {print $1 "\t" p2 "\t" p1}}' $1
+  fi
+}
+
+## print all of the BX tags from a BAM
+function printbx() {
+  if [ $1 -eq "" ]; then
+    echo "Print all the BX tags from a BAM"
+    echo "Usage: printbx <bam>"
+  else
+    samtools view $1 | gawk 'match($0, /BX:Z:(.*)\s?/, ary) {print ary[1]}'| cut -f1
+  fi
+}
+
+## find R files that have some text
+function grepRfind {
+  if [ $1 -eq "" ]; then
+    echo "Recursively search all R files (*.R) for a pattern"
+    echo "Usage: grepRfind <pattern>"
+  else
+    grep -Rnl ./ -e $1 --include \*.R --ignore-case
+  fi
+}
+
+## convert a wiggle file to BED file
+function wiggle2bed {
+  if [ $1 -eq "" ]; then
+    echo "Convert a wiggle file to a BED file"
+    echo "Usage: wiggle2bed <wiggle>"
+  else
+    awk 'NR==1 { a=$1; b=$2; c=$3; match($2, /chrom=chr(.*)/, ary); chr=ary[1]; match($3, /span=([0-9]+)/, ary2); span=ary2[1]} NR > 1 {print chr "\t" $1 "\t" ($1 + span) "\t" $2}' $1
+  fi
+}
+
+## get the difference between two $PATH (or similar) variables
+function pathdiff {
+  if [ $1 -eq "" ]; then
+    echo "Find the difference between to PATH variables (or other colon-separated variables)"
+    echo "Usage: pathdiff <var1> <var2>"
+  else 
+    diff --new-line-format="" --unchanged-line-format="" <(echo $1 | tr : '\n' | sort) <(echo $2 | tr : '\n' | sort)
+  fi
+}
