@@ -1,3 +1,6 @@
+Make a directory for Emacs settings and place ``init.el`` in it
+``mkdir -p ~/.emacs.d``
+
 See comments within ``init.d``. In particular, this sets up two systems:
 
 #### Python
