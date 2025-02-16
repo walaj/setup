@@ -4,6 +4,9 @@
 ;; go right to scratch buffer
 (setq inhibit-startup-message t)
 
+;; stop the suspend (Ctrl-z "like" ability, which default is C-x C-z and it keeps getting triggered)
+(put 'suspend-frame 'disabled t)
+
 ;; display line numbers
 (global-display-line-numbers-mode 1)
 
@@ -32,7 +35,7 @@
 ;(load-theme 'modus-vivendi 1)
 
 ;; allow recent-file mode. M-x recentf-open-files
-(recentf-mode 1)
+;(recentf-mode 1)
 
 ;; automatically reload buffer if file changed below you 
 (global-auto-revert-mode 1)
@@ -114,6 +117,12 @@ vi style of % jumping to matching brace."
       (save-buffers-kill-emacs)))
 (global-set-key "\C-x\C-c" 'my-exit-from-emacs)
 
+;; jump to end (for debugging)
+(with-current-buffer " *load*"
+  (goto-char (point-max)))
+
+
+
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
@@ -129,24 +138,21 @@ vi style of % jumping to matching brace."
 (unless package-archive-contents
   (package-refresh-contents))
 
+
 ;; install use-package if not found (M-x package-install RET ***)
-;; use-package
+;; use-package, ess, ivy, counsel, ivy-rich, smex
 
 ;; use use-package to install elpy
 (require 'use-package)
-(setq use-package-always-ensure t) ;; install if not found
+;(setq use-package-always-ensure t) ;; install if not found
 
 ;; for integration of R into emacs
 (use-package ess)
 
-; set to desired indentation level, e.g., 4 spaces
-(setq ess-indent-offset 4)
-(setq ess-arg-function-offset 4)
-
 ;; Adds M-x recent command sorting for counsel-M-x
-(use-package smex
-:defer 1
-:after counsel)
+;(use-package smex
+;:defer 1
+;:after counsel)
 
 ;; more rich functions in emacs
 (use-package counsel
@@ -196,50 +202,35 @@ vi style of % jumping to matching brace."
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
 
-;(use-package python-mode
-;  :ensure t
-;  :custom
-;  (python-sxhell-interpreter "python3"))
+(use-package python-mode
+  :ensure t
+  :custom
+  (python-sxhell-interpreter "python3"))
 
 (use-package elpy
   :ensure t
   :init
   (elpy-enable))
 
-(add-hook 'elpy-mode-hook
-    (lambda ()
-    (local-unset-key (kbd "C-c C-n"))
-    (define-key elpy-mode-map (kbd "C-c C-n") 'elpy-shell-send-statement-and-step)))
-
-;; use ipython
-(setq python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --simple-prompt")
-
-;; send highlighted region to mac clipboard
-(defun clip-copy ()
-  (interactive)
-  (when (region-active-p)
-    (shell-command-on-region (region-beginning) (region-end) "pbcopy")
-    (deactivate-mark)))
-
-(add-hook 'python-mode-hook 'whitespace-mode)
-(setq whitespace-style '(face tabs trailing tab-mark))
-
-;(use-package pyvenv
-;  :ensure t
-;  :config
-;  (pyvenv-mode t)
+(use-package pyvenv
+  :ensure t
+  :config
+  (pyvenv-mode t)
 
   ;; Set correct Python interpreter
-  ;(setq pyvenv-post-activate-hooks
-  ;      (list (lambda ()
-  ;             (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
-  ;(setq pyvenv-post-deactivate-hooks
-  ;      (list (lambda ()
-  ;              (setq python-shell-interpreter "python3")))))
+;  (setq pyvenv-post-activate-hooks
+;        (list (lambda ()
+;                (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
+;  (setq pyvenv-post-deactivate-hooks
+;        (list (lambda ()
+;                (setq python-shell-interpreter "python3")))))
 
 
 ;; (use-package elpy;
 ;; OA	     :ensure t
 ;; 	     :init
 ;; 	     (elpy-enable))
+
+;; jump to end (for debugging)
+(with-current-buffer " *load*"
+  (goto-char (point-max)))
