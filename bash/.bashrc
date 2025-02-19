@@ -36,3 +36,6 @@ set_git_ssh_remote() {
     git remote -v
 }
 
+function jsys() {
+   echo "Memory: $(free -h | awk '/^Mem:/ {print $2}')" && echo "CPUs: $(nproc)"
+ }
