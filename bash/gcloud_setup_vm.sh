@@ -5,6 +5,28 @@ sudo apt-get install git
 sudo apt-get install tree
 sudo apt-get install tmux
 sudo apt-get install samtools
+sudo apt-get install libcurl4-openssl-dev
+
+# Update and install required packages
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y r-base gdebi-core
+
+# Install Shiny package in R
+sudo su - -c "R -e \"install.packages('shiny', repos='https://cloud.r-project.org/')\""
+sudo su - -c "R -e \"install.packages('data.table', repos='https://cloud.r-project.org/')\""
+sudo su - -c "R -e \"install.packages('tidyverse', repos='https://cloud.r-project.org/')\""
+sudo su - -c "R -e \"install.packages('plotly', repos='https://cloud.r-project.org/')\""
+sudo su - -c "R -e \"install.packages('devtools', repos='https://cloud.r-project.org/')\""
+sudo su - -c "R -e \"install.packages('BiocManager', repos='https://cloud.r-project.org/')\""
+sudo su - -c "R -e \"BiocManager::install('GenomicRanges')\""
+sudo su - -c "R -e \"BiocManager::install('rtracklayer')\""
+
+# Install Shiny Server
+wget https://download3.rstudio.org/ubuntu-20.04/x86_64/shiny-server-1.5.21.1082-amd64.deb
+sudo gdebi -n shiny-server-1.5.21.1082-amd64.deb
+
+# Start Shiny Server
+sudo systemctl enable --now shiny-server
 
 ## get customizations from github
 mkdir git

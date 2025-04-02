@@ -1,3 +1,18 @@
+(require 'package)
+
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("gnu"   . "https://elpa.gnu.org/packages/")))
+
+(unless package-archive-contents
+  (package-refresh-contents))
+
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+
 ;; turn off the menu bar
 (menu-bar-mode -1)
 
@@ -193,8 +208,8 @@ vi style of % jumping to matching brace."
   (setq which-key-separator " - " ))
 
 ;;
-(use-package doom-modeline
-  :init (doom-modeline-mode 1))
+;;(use-package doom-modeline
+;;  :init (doom-modeline-mode 1))
 
 ;(use-package python-mode
 ;  :ensure t
