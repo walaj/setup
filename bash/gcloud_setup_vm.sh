@@ -1,15 +1,7 @@
-## basic installations
-sudo apt-get update
-sudo apt-get install emacs 
-sudo apt-get install git
-sudo apt-get install tree
-sudo apt-get install tmux
-sudo apt-get install samtools
-sudo apt-get install libcurl4-openssl-dev
-
-# Update and install required packages
 sudo apt update && sudo apt upgrade -y
-sudo apt install -y r-base gdebi-core
+sudo apt-get install -y emacs git tree tmux samtools libcurl4-openssl-dev libhts-dev bwa
+# Additional R-related tools
+sudo apt-get install -y r-base gdebi-core
 
 # Install Shiny package in R
 sudo su - -c "R -e \"install.packages('shiny', repos='https://cloud.r-project.org/')\""
@@ -90,3 +82,11 @@ blkid /dev/sdb ## make note of the UUID
 
 ## give user permsissions on the disk
 sudo chown -R $USER:$USER /mnt/wgs
+
+## install VEP ensembl
+sudo apt-get install -y \
+    git unzip curl build-essential \
+    zlib1g-dev libperl-dev \
+    libdbi-perl libdbd-mysql-perl \
+    libjson-perl liblzma-dev \
+    cpanminus tabix
