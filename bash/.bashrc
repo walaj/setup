@@ -10,6 +10,9 @@ alias lem='emacs -nw -q --load ~/.emacs.d/lite.el'
 alias clean='rm *~ \#* 2> /dev/null'
 alias dush='du -h --max-depth=1 . | sort -h -k1,1'
 
+#for google cloud
+alias getvmtype='curl -s -H "Metadata-Flavor: Google" http://metadata.google.internal/computeMetadata/v1/instance/machine-type | awk -F/ '\''{print $NF}'\'
+
 rem() {
     # Check if the configuration file exists  
     if [ ! -f ~/.emacs.d/lite.el ]; then  
