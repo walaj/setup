@@ -1,0 +1,3 @@
+ patient,sample,lane,fastq_1,fastq_2
+ ss,tumor,NA,/mnt/wgs/wgs_fastq/SARC0277-100K-DNA-RNA_S1_L006_R1_001.fastq.gz,/mnt/wgs/wgs_fastq/SARC0277-100K-DNA-RNA_S1_L006_R2_001.fastq.gz
+ ss,blood,NA,/mnt/wgs/wgs_fastq/20240606-UCLA-Blood-DNA_S3_L006_R1_001.fastq.gz,/mnt/wgs/wgs_fastq/20240606-UCLA-Blood-DNA_S3_L006_R2_001.fastq.gz

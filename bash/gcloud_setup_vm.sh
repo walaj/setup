@@ -1,9 +1,10 @@
 sudo apt update && sudo apt upgrade -y
 sudo apt-get install -y emacs git tree bcftools bzip2 tmux \
-     samtools libcurl4-openssl-dev bwa cmake autoconf automake \
+     samtools libcurl4-openssl-dev bwa cmake autoconf automake cloud-guest-utils \
      libtool libboost-all-dev htop iotop dstat g++ libbz2-dev \
      libxml2-dev libssl-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev \
-     libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
+     libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev \
+     libhts-dev libopenslide0 libopenslide-dev 
 export BOOST_ROOT=/usr/include/boost
 
 # Reference genome
@@ -15,6 +16,9 @@ cd
 #gsutil cp gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta .
 #gsutil cp gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.fasta.fai .
 #gsutil cp gs://gcp-public-data--broad-references/hg38/v0/Homo_sapiens_assembly38.dict .
+## NB: these are identical to the GATK.GRCh38 human genome from sarek:
+## aws s3 cp s3://ngi-igenomes/igenomes/Homo_sapiens/GATK/GRCh38/Sequence/WholeGenomeFasta/Homo_sapiens_assembly38.fasta     . --no-sign-request
+
 
 ## get customizations from github
 mkdir git
