@@ -118,19 +118,29 @@ mv nextflow ~/software/
 echo 'export PATH=$HOME/software:$PATH' >> ~/.bashrc
 source ~/.bashrc
 
-## install Docker
-sudo apt install apt-transport-https ca-certificates curl software-properties-common  ## dependencies
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -   ## add key
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
-sudo apt install docker-ce
-docker --version ## verify
+##install and run Docker
+sudo apt-get update && sudo apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release  # install prerequisites
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg  # add Docker GPG key
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null  # add Docker repo
+sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io  # install Docker engine
+sudo systemctl enable --now docker  # start Docker daemon
+sudo usermod -aG docker $USER  # grant user Docker permissions
+newgrp docker  # apply new group without logout
+docker run --rm hello-world  # verify Docker works
 
-## start docker damen
-sudo systemctl start docker
-sudo systemctl enable docker ## auto start on reboot
-sudo systemctl status docker ## verify
-sudo usermod -aG docker $USER ## run without sudo
-newgrp docker ## apply changes
+## install Docker
+# sudo apt install apt-transport-https ca-certificates curl software-properties-common ## dependencies
+# curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -   ## add key
+# sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable"
+# sudo apt install docker-ce
+# docker --version ## verify
+
+# ## start docker damen
+# sudo systemctl start docker
+# sudo systemctl enable docker ## auto start on reboot
+# sudo systemctl status docker ## verify
+# sudo usermod -aG docker $USER ## run without sudo
+# newgrp docker ## apply changes
 
 ## pull nf-core module
 nextflow pull nf-core/sarek

@@ -1,0 +1,7 @@
+## example sample sheet
+patient,sex,status,sample,bam,bai
+ptA,XY,1,tumor,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/tumor/ptA_tumor.clean.recal.bam,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/tumor/ptA_tumor.clean.recal.bam.bai
+ptA,XY,0,normal,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/normal/ptA_normal.clean.recal.bam,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/normal/ptA_normal.clean.recal.bam.bai
+
+## run like this
+#nextflow run nf-core/sarek --input bam_samplesheet.csv --genome  GATK.GRCh38 --outdir results_cnvkit --step variant_calling --tools cnvkit --somatic -profile docker -c nextflow.config
