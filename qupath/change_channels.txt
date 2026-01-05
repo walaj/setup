@@ -1,0 +1,31 @@
+### RUn in Automate->Run project
+
+import qupath.lib.gui.scripting.QPEx
+
+// Desired channel names in order
+def desired = [
+  'DNA1','bg488','bg555','bg647','DNA2','MX1','SLAM6','GZMB','DNA3','CD45RO',
+  'CD3d','CD8a','panCK','DNA4','TCF1','LAG3','PDL1','aSMA','DNA5','TIM3',
+  'tBET','CD134','MPO','DNA6','EGFR','CD11c','CD103','Ki67'
+]
+
+// If nothing is open (shouldn't happen when using 'Run for project'), bail gracefully
+def server = QPEx.getCurrentServer()
+if (server == null) {
+    println "No image open; use 'Run for project' so QuPath opens each image automatically."
+    return
+}
+
+def n = server.nChannels()
+
+// Trim or pad to match this images channel count
+def names = (desired.size() >= n) ? desired.take(n)
+                                  : desired + ((desired.size())..<n).collect { "Ch${it+1}" }
+
+// Apply to the currently open image
+QPEx.setChannelNames(*names as String[])
+
+// Save & report
+QPEx.saveImageData(QPEx.getCurrentImageData())
+println "Set channel names for: " +
+QPEx.getCurrentImageData().getServer().getMetadata().getName() + " -> " + names
