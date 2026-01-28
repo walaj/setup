@@ -15,3 +15,46 @@ omero download Image:1614258 .
 sbatch --mem 4g -t 0-8 -p short --wrap 'omero download Image:1614258 .'
 
 # (be sure to put the command to run in quotes when you pass it as the --wrap argument like this)
+
+
+
+### f you need to download from other groups, change the omero sessions group command. omero sessions are tied to a single group at a time. You just give it the string name of the group (case sensitive)
+
+### systematically get all image ids
+
+I can give you 2 options. One hack is to shift-click select all the images in the left-hand menu, then click the "link" button in the upper right. the URL it gives you will include all the IDs but you need to parse the string a bit.
+
+
+the other way is omero cli
+
+omero hql -q --style csv 'select img.id from Dataset ds join ds.imageLinks dil join dil.child img where ds.id=17812'
+
+
+
+### all together with sbatch
+omero hql -q --style csv \
+  'select img.id from Dataset ds join ds.imageLinks dil join dil.child img where ds.id=17812' \
+| tail -n +2 | cut -d, -f2 \
+| while read -r id; do
+    sbatch --job-name omero_${id} --mem 4g -t 0-8 -p short \
+      --wrap "omero download Image:${id} ."
+  done
+
+
+### all together without sbatcy
+omero hql -q --style csv \
+  'select img.id from Dataset ds join ds.imageLinks dil join dil.child img where ds.id=17812' \
+| tail -n +2 | cut -d, -f2 \
+| while read -r id; do
+    omero download Image:${id} .
+  done
+
+
+### all together, view only
+omero hql -q --style csv \
+  'select img.id from Dataset ds join ds.imageLinks dil join dil.child img where ds.id=17812' \
+| tail -n +2 \
+| cut -d, -f2 \
+| while read -r id; do
+    echo "omero download Image:${id} ."
+  done
