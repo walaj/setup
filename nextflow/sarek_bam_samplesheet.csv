@@ -1,7 +1,8 @@
-## example sample sheet
 patient,sex,status,sample,bam,bai
-ptA,XY,1,tumor,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/tumor/ptA_tumor.clean.recal.bam,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/tumor/ptA_tumor.clean.recal.bam.bai
-ptA,XY,0,normal,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/normal/ptA_normal.clean.recal.bam,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/normal/ptA_normal.clean.recal.bam.bai
-
-## run like this
-#nextflow run nf-core/sarek --input bam_samplesheet.csv --genome  GATK.GRCh38 --outdir results_cnvkit --step variant_calling --tools cnvkit --somatic -profile docker -c nextflow.config
+ss,XY,1,tumor,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/tumor/ptA_tumor.clean.recal.bam,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/tumor/ptA_tumor.clean.recal.bam.bai
+ss,XY,0,normal,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/normal/ptA_normal.clean.recal.bam,/mnt/wgs/Personalis_20250314_WGS_WES_WTS/NP_WGS/alignment/preprocessing/recalibrated/normal/ptA_normal.clean.recal.bam.bai
+#### DELETE ALL COMMENT LINES
+#### run like this
+#nextflow run nf-core/sarek --input bam_samplesheet.csv --genome GATK.GRCh38 --outdir results --step variant_calling --tools cnvkit,freebayes,mutect2,manta,msisensorpro,vep,ascat,strelka --somatic -profile docker -c ../../wgs/sarek22/nextflow.config --wes --intervals exons.bed
+#VERY important -- when you run the fastq -> BAM alignment in sarek, it adds a "patient name" as patient_sample -- e.g. ss_tumor. This has to be exactly recreated in variant call
+# e.g. patient = ss, sample = tumor -- otherwise MuTect2 crashes

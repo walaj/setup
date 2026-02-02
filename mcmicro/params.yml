@@ -1,0 +1,16 @@
+workflow:
+  start-at: segmentation
+  stop-at: quantification
+  viz: true
+  segmentation-channel: 1
+options:
+  unmicst: --channel 1
+  s3seg: --expand-size 3 --maxima-footprint-size 5 --area-max 50000 --mean-intensity-min 80
+  mcquant: --masks nucleiRing.ome.tif cytoRing.ome.tif cellRing.ome.tif
+modules:
+  watershed:
+    name: s3seg
+    container: labsyspharm/s3segmenter
+    version: 1.5.5-large
+    channel: --probMapChan
+    idxbase: 1
